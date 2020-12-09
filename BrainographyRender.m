@@ -86,13 +86,18 @@ if settingsStruct.saveMovie
     axis off;
     camproj perspective;
     axis vis3d;
+    
+    V = VideoWriter([figstr '.avi']);
+    V.FrameRate = 5;
+    open(V);
     for i = 1:length(rot)
         view(rot(i), el);
         set(K,'Visible','Off');
         K=camlight('left');
-        M(i) = getframe(gcf);
-    end 
-    movie2avi(M,[figstr '.avi'],'fps', 5); 
+        frame = getframe(gcf);
+        writeVideo(V,frame);
+    end
+    close(V);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

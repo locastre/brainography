@@ -63,6 +63,13 @@ setappdata(0,'mainHandle',hObject);
 % modified by the user and won't be deleted if the
 % guidata(hObject,struct('volString','Settings','brain_at',[],'renderRes',2,'currentVol',1,'saveImages',0,'saveMovie',0));
 
+%set ui to use legacy color picking interface 
+s = settings;
+oldcolorpicker = 'matlab.ui.internal.dialog.ColorChooser';
+% For reference:
+% newcolorpicker = 'matlab.ui.internal.dialog.WebColorChooser';
+s.matlab.ui.dialog.uisetcolor.ControllerName.TemporaryValue = oldcolorpicker;
+
 initStruct = ui_initialize(handles);
 guidata(hObject,initStruct);
 

@@ -23,7 +23,7 @@ dbstop if error
 
 % Edit the above text to modify the response to help brainography
 
-% Last Modified by GUIDE v2.5 11-Mar-2019 12:53:41
+% Last Modified by GUIDE v2.5 09-Dec-2020 22:58:40
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -83,18 +83,18 @@ initStruct.saveImages = 0;
 initStruct.saveMovie = 0;
 initStruct.mainHandle = handles;
 initStruct.figstr = 'brainography1'; 
-set(handles.edit2, 'String', initStruct.figstr);
-set(handles.popupmenu1,'Value',1);
-set(handles.popupmenu1,'String',{'+ Add New Volume'});
+set(handles.saveStringEdit, 'String', initStruct.figstr);
+set(handles.addVolPopupMenu,'Value',1);
+set(handles.addVolPopupMenu,'String',{'+ Add New Volume'});
 defaultGUI(handles);
 
-% set(handles.edit2,'String',initStruct.figstr);
-% set(handles.checkbox1,'Enable','Off');
-% set(handles.checkbox4,'Enable','Off');
-% set(handles.checkbox6,'Enable','Off');
-% set(handles.pushbutton14,'Enable','Off');
-% set(handles.pushbutton8,'Enable','Off');
-% set(handles.pushbutton10,'Enable','Off');
+% set(handles.saveStringEdit,'String',initStruct.figstr);
+% set(handles.pipesCheckBox,'Enable','Off');
+% set(handles.pipesCheckBox,'Enable','Off');
+% set(handles.singleColorCheckBox,'Enable','Off');
+% set(handles.colorPickPushButton,'Enable','Off');
+% set(handles.nodesAdvancedPushButton,'Enable','Off');
+% set(handles.pipesAdvancedPushButton,'Enable','Off');
 
 % UIWAIT makes brainography wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -131,20 +131,20 @@ if length(handles) > 1
     BrainographyRender(handles,gca,1);
 end
 
-function edit1_Callback(hObject, eventdata, handles)
-% hObject    handle to edit1 (see GCBO)
+function opacityEdit_Callback(hObject, eventdata, handles)
+% hObject    handle to opacityEdit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit1 as text
-%        str2double(get(hObject,'String')) returns contents of edit1 as a double
+% Hints: get(hObject,'String') returns contents of opacityEdit as text
+%        str2double(get(hObject,'String')) returns contents of opacityEdit as a double
 handles(handles(end).currentVol).opacity = str2num(get(hObject,'String'));
 guidata(hObject,handles);
 disp(get(hObject,'String'));
 
 % --- Executes during object creation, after setting all properties.
-function edit1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit1 (see GCBO)
+function opacityEdit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to opacityEdit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -155,22 +155,22 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in pushbutton1.
-function pushbutton1_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton1 (see GCBO)
+% --- Executes on button press in clearVolPushButton.
+function clearVolPushButton_Callback(hObject, eventdata, handles)
+% hObject    handle to clearVolPushButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
 
 H = guihandles(hObject);
-volVal = get(H.popupmenu1,'Value');
-volString = get(H.popupmenu1,'String');
+volVal = get(H.addVolPopupMenu,'Value');
+volString = get(H.addVolPopupMenu,'String');
 
 if volVal ~= size(volString,1)  %add-volume option should always be last option in menu
     % clear/delete popupmenu entry
     volString(volVal)=[];
-    set(H.popupmenu1,'String',volString); %update popupmenu1
-    set(H.popupmenu1,'Value',1);
+    set(H.addVolPopupMenu,'String',volString); %update addVolPopupMenu
+    set(H.addVolPopupMenu,'Value',1);
     handles(volVal)=[]; % clear the removed vol from guidata/handles
     guidata(hObject,handles);
     if length(handles) == 1
@@ -182,25 +182,25 @@ elseif length(handles) == 1
     defaultGUI(H);    
 end
 
-% --- Executes on selection change in popupmenu1.
-function popupmenu1_Callback(hObject, eventdata, handles)
-% hObject    handle to popupmenu1 (see GCBO)
+% --- Executes on selection change in addVolPopupMenu.
+function addVolPopupMenu_Callback(hObject, eventdata, handles)
+% hObject    handle to addVolPopupMenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: contents = cellstr(get(hObject,'String')) returns popupmenu1 contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from popupmenu1
+% Hints: contents = cellstr(get(hObject,'String')) returns addVolPopupMenu contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from addVolPopupMenu
 H=guihandles(hObject);
-volVal=get(H.popupmenu1,'Value');
-volString=get(H.popupmenu1,'String');
+volVal=get(H.addVolPopupMenu,'Value');
+volString=get(H.addVolPopupMenu,'String');
 
 if volVal == size(volString,1)
     % open file chooser, then load the volume via SPM, set/check .dim
     % property, throw error if dim does not agree and size(volString,1)~=1,
-    % user sets name for vol entry, add name to top of popupmenu1 value 'String'
+    % user sets name for vol entry, add name to top of addVolPopupMenu value 'String'
     % Ordering: newest vols go on top
 %     if length(handles) > 1
-%         handles(handles(end).currentVol).opacity=get(H.edit1,'String');
+%         handles(handles(end).currentVol).opacity=get(H.opacityEdit,'String');
 %     end
     [filename, pathname] = uigetfile({'*.nii;*.nii.gz;*.img;*.hdr','NIfTI/ANALYZE Files (*.nii,*.nii.gz,*.hdr,*.img)'}, 'Select a Volume:');
     %     disp(filterindex);
@@ -233,7 +233,8 @@ if volVal == size(volString,1)
             disp('Volume dimensions or orientation do not agree with previously loaded images.');
         else
             % User prompt for name: build struct before prepending it to handles
-            newVolString = inputdlg({'Enter identifier for this volume:'},'Volume Import',1,{['Volume ' num2str(length(handles))]});
+            [~, tmpVolString, ~]  = fileparts(filename);
+            newVolString = inputdlg({'Enter identifier for this volume:'},'Volume Import',1,{tmpVolString});
             tmp=newRenderStruct;
             tmp.brain_at=vox;
             tmp.volString=newVolString{1};
@@ -256,7 +257,7 @@ if volVal == size(volString,1)
         end
     end
 elseif volVal ~= handles(end).currentVol % User chose to view another loaded volume, not to import new volume
-%     handles(handles(end).currentVol).opacity=get(H.edit1,'String');
+%     handles(handles(end).currentVol).opacity=get(H.opacityEdit,'String');
     handles(end).currentVol=volVal;
     guidata(hObject,handles);
     
@@ -268,8 +269,8 @@ end
 
 
 % --- Executes during object creation, after setting all properties.
-function popupmenu1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to popupmenu1 (see GCBO)
+function addVolPopupMenu_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to addVolPopupMenu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -280,9 +281,9 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in pushbutton4.
-function pushbutton4_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton4 (see GCBO)
+% --- Executes on button press in setShellValuesPushButton.
+function setShellValuesPushButton_Callback(hObject, eventdata, handles)
+% hObject    handle to setShellValuesPushButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 % regionvalues;
@@ -291,18 +292,18 @@ if length(handles) > 1
     H = guihandles(hObject);
     handles = guidata(hObject);
     scValue = handles(handles(end).currentVol).singleColorFlag;
-    set(H.checkbox6,'Value',scValue);
-    set(H.pushbutton14,'BackgroundColor',handles(handles(end).currentVol).singleColor);
+    set(H.singleColorCheckBox,'Value',scValue);
+    set(H.colorPickPushButton,'BackgroundColor',handles(handles(end).currentVol).singleColor);
     if scValue
-        set(H.pushbutton14,'Enable','On');
+        set(H.colorPickPushButton,'Enable','On');
     else
-        set(H.pushbutton14,'Enable','Off');
+        set(H.colorPickPushButton,'Enable','Off');
     end
 end
 
-% --- Executes on button press in pushbutton5.
-function pushbutton5_Callback(hObject, ~, handles) % Launch CM chooser
-% hObject    handle to pushbutton5 (see GCBO)
+% --- Executes on button press in setConnectivityPushButton.
+function setConnectivityPushButton_Callback(hObject, ~, handles) % Launch CM chooser
+% hObject    handle to setConnectivityPushButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 if length(handles) > 1
@@ -310,30 +311,30 @@ if length(handles) > 1
     H = guihandles(hObject);
     handles = guidata(hObject);
     if ~isempty(handles(handles(end).currentVol).connectivityMatrix)
-        set(H.checkbox4,'Enable','On');
-        set(H.checkbox4,'Value',0);
-        set(H.pushbutton10,'Enable','Off');% How to get connectivity matrix back to this GUI? With handle?
+        set(H.pipesCheckBox,'Enable','On');
+        set(H.pipesCheckBox,'Value',0);
+        set(H.pipesAdvancedPushButton,'Enable','Off');% How to get connectivity matrix back to this GUI? With handle?
     else
-        set(H.checkbox4,'Enable','Off');
-        set(H.checkbox4,'Value',0);
-        set(H.pushbutton10,'Enable','Off');
+        set(H.pipesCheckBox,'Enable','Off');
+        set(H.pipesCheckBox,'Value',0);
+        set(H.pipesAdvancedPushButton,'Enable','Off');
     end
 end
 
-% --- Executes on button press in checkbox1. Nodes on/off option
-function checkbox1_Callback(hObject, eventdata, handles)
-% hObject    handle to checkbox1 (see GCBO)
+% --- Executes on button press in nodesCheckBox. Nodes on/off option
+function nodesCheckBox_Callback(hObject, eventdata, handles)
+% hObject    handle to nodesCheckBox (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hint: get(hObject,'Value') returns toggle state of checkbox1
+% Hint: get(hObject,'Value') returns toggle state of nodesCheckBox
 currentVol = handles(end).currentVol;
 H = guihandles(hObject);
 handles(currentVol).nodes=get(hObject, 'Value');
 nodeProps = handles(currentVol).nodeProps;
 
 if handles(currentVol).nodes
-    if isempty(nodeProps);
+    if isempty(nodeProps)
         at = handles(currentVol).brain_at;
         numberROI = unique(at(find(at~=0)));
         nodeProps = cell(size(numberROI,1),3);
@@ -349,46 +350,46 @@ if handles(currentVol).nodes
     if isempty(handles(currentVol).nodeSchema)
         handles(currentVol).nodeSchema = rand(1,3);
     end
-    set(H.pushbutton8,'Enable','On');
+    set(H.nodesAdvancedPushButton,'Enable','On');
 else
-    set(H.pushbutton8,'Enable','Off');
+    set(H.nodesAdvancedPushButton,'Enable','Off');
 end
 guidata(hObject,handles);
 
 
-% --- Executes on button press in checkbox2.  Save Images Option
-function checkbox2_Callback(hObject, eventdata, handles)
-% hObject    handle to checkbox2 (see GCBO)
+% --- Executes on button press in saveImagesCheckBox.  Save Images Option
+function saveImagesCheckBox_Callback(hObject, eventdata, handles)
+% hObject    handle to saveImagesCheckBox (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hint: get(hObject,'Value') returns toggle state of checkbox2
+% Hint: get(hObject,'Value') returns toggle state of saveImagesCheckBox
 handles(end).saveImages=get(hObject,'Value');
 guidata(hObject,handles);
 
-% --- Executes on button press in checkbox3. Save Movie Option
-function checkbox3_Callback(hObject, eventdata, handles)
-% hObject    handle to checkbox3 (see GCBO)
+% --- Executes on button press in saveMovieCheckBox. Save Movie Option
+function saveMovieCheckBox_Callback(hObject, eventdata, handles)
+% hObject    handle to saveMovieCheckBox (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hint: get(hObject,'Value') returns toggle state of checkbox3
+% Hint: get(hObject,'Value') returns toggle state of saveMovieCheckBox
 handles(end).saveMovie=get(hObject,'Value');
 guidata(hObject,handles);
 
-% --- Executes on button press in checkbox4.
-function checkbox4_Callback(hObject, eventdata, handles)
-% hObject    handle to checkbox4 (see GCBO)
+% --- Executes on button press in pipesCheckBox.
+function pipesCheckBox_Callback(hObject, eventdata, handles)
+% hObject    handle to pipesCheckBox (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hint: get(hObject,'Value') returns toggle state of checkbox4
+% Hint: get(hObject,'Value') returns toggle state of pipesCheckBox
 currentVol = handles(end).currentVol;
 handles(currentVol).pipes=get(hObject,'Value');
 H = guihandles(hObject);
 
 if handles(currentVol).pipes
-    set(H.pushbutton10,'Enable','On');
+    set(H.pipesAdvancedPushButton,'Enable','On');
     pipeColorHyperCube = handles(currentVol).pipeColorHyperCube;
     CM = handles(currentVol).connectivityMatrix;
     numberROI = size(CM,1);
@@ -403,25 +404,25 @@ if handles(currentVol).pipes
         handles(currentVol).pipeColorHyperCube = pipeColorHyperCube;
     end
 else
-    set(H.pushbutton10,'Enable','Off');
+    set(H.pipesAdvancedPushButton,'Enable','Off');
 end
 guidata(hObject,handles);
 
 function resetMyAxes(H)
-ac = allchild(H.axes1);
+ac = allchild(H.previewAxes);
 for i = 1:size(ac,1)
     delete(ac(i));
 end
 view([1 0 0]);
 % clmo(handlem('light'));
-if get(H.checkbox5,'Value')
-    set(H.checkbox5,'Value',0);
+if get(H.camlightCheckBox,'Value')
+    set(H.camlightCheckBox,'Value',0);
 end
 
 
-% --- Executes on button press in pushbutton7.
-function pushbutton7_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton7 (see GCBO)
+% --- Executes on button press in updatePreviewPushButton.
+function updatePreviewPushButton_Callback(hObject, eventdata, handles)
+% hObject    handle to updatePreviewPushButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
@@ -433,73 +434,73 @@ resetMyAxes(H);
 
 
 if length(handles) > 1
-    BrainographyRender(handles,H.axes1,3);
+    BrainographyRender(handles,H.previewAxes,5);
 %     view([1 1 0]);
 end
 
 function populateGUI(H, popVal)
-set(H.checkbox6,'Enable','On');
-set(H.checkbox1,'Enable','On');
+set(H.singleColorCheckBox,'Enable','On');
+set(H.nodesCheckBox,'Enable','On');
 
 
 if ~isempty(popVal.opacity)
-    set(H.edit1,'String',popVal.opacity);
+    set(H.saveStringEdit,'String',popVal.opacity);
 else
-    set(H.edit1,'String','1.0');
+    set(H.saveStringEdit,'String','1.0');
 end
 
 if popVal.nodes
-    set(H.checkbox1,'Value',1);
-    set(H.pushbutton8,'Enable','On');
+    set(H.nodesCheckBox,'Value',1);
+    set(H.nodesAdvancedPushButton,'Enable','On');
 else
-    set(H.checkbox1,'Value',0);
-    set(H.pushbutton8,'Enable','Off');
+    set(H.nodesCheckBox,'Value',0);
+    set(H.nodesAdvancedPushButton,'Enable','Off');
 end
 
 if popVal.pipes && ~isempty(popVal.connectivityMatrix)
-    set(H.checkbox4,'Enable','On');
-    set(H.checkbox4,'Value',1);
-    set(H.pushbutton10,'Enable','On');
+    set(H.pipesCheckBox,'Enable','On');
+    set(H.pipesCheckBox,'Value',1);
+    set(H.pipesAdvancedPushButton,'Enable','On');
 else
-    set(H.checkbox4,'Value',0);
-    set(H.pushbutton10,'Enable','Off');
+    set(H.pipesCheckBox,'Value',0);
+    set(H.pipesAdvancedPushButton,'Enable','Off');
     if isempty(popVal.connectivityMatrix)
-        set(H.checkbox4,'Enable','Off');
+        set(H.pipesCheckBox,'Enable','Off');
     else
-        set(H.checkbox4,'Enable','On');
+        set(H.pipesCheckBox,'Enable','On');
     end
 end
 
 if popVal.singleColorFlag
-    set(H.checkbox6,'Value',1);
-    set(H.pushbutton14,'Enable','On');
+    set(H.singleColorCheckBox,'Value',1);
+    set(H.colorPickPushButton,'Enable','On');
 else
-    set(H.checkbox6,'Value',0);
-    set(H.pushbutton14,'Enable','Off');
+    set(H.singleColorCheckBox,'Value',0);
+    set(H.colorPickPushButton,'Enable','Off');
 end
 
-set(H.checkbox1,'Enable','On');
-set(H.pushbutton14,'BackgroundColor',popVal.singleColor);
+set(H.nodesCheckBox,'Enable','On');
+set(H.colorPickPushButton,'BackgroundColor',popVal.singleColor);
 
 
 
 function defaultGUI(H)
 
-set(H.edit1,'String','1.0');
+set(H.saveStringEdit,'String','1.0');
 
-set(H.checkbox1,'Enable','On');
-set(H.checkbox1,'Value',0);
+set(H.nodesCheckBox,'Enable','On');
+set(H.nodesCheckBox,'Value',0);
 
-set(H.checkbox4,'Enable','Off');
-set(H.checkbox4,'Value',0);
+set(H.pipesCheckBox,'Enable','Off');
+set(H.pipesCheckBox,'Value',0);
 
-set(H.pushbutton10, 'Enable', 'Off');
+set(H.pipesAdvancedPushButton, 'Enable', 'Off');
 
-set(H.checkbox6,'Enable','On');
-set(H.checkbox6,'Value',0);
+set(H.singleColorCheckBox,'Enable','On');
+set(H.singleColorCheckBox,'Value',0);
 
-set(H.pushbutton14,'BackgroundColor',[236/255 214/255 214/255]);
-set(H.pushbutton14,'Enable','Off');
+set(H.colorPickPushButton,'BackgroundColor',[236/255 214/255 214/255]);
+set(H.colorPickPushButton,'Enable','Off');
 
 set(H.savePathText,'String','');
 
@@ -516,17 +517,17 @@ resetMyAxes(H);
 %     'pipeColorMap','jet','pipeCoupletThreshold',50,'pipeStyle',1,'pipeUniform',0,'renderRes',[], ...
 %     'currentVol',[],'saveImages',0,'saveMovie',0,'figstr','','mainHandle',[],'numberROI',[]);
 
-% --- Executes on button press in pushbutton8. Launch Nodes Advanced
+% --- Executes on button press in nodesAdvancedPushButton. Launch Nodes Advanced
 % Settings
-function pushbutton8_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton8 (see GCBO)
+function nodesAdvancedPushButton_Callback(hObject, eventdata, handles)
+% hObject    handle to nodesAdvancedPushButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 waitfor(node_opts);
 
-% --- Executes on button press in pushbutton10. Launch Pipes Advanced
-function pushbutton10_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton10 (see GCBO)
+% --- Executes on button press in pipesAdvancedPushButton. Launch Pipes Advanced
+function pipesAdvancedPushButton_Callback(hObject, eventdata, handles)
+% hObject    handle to pipesAdvancedPushButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 if ~isempty(handles(handles(end).currentVol).connectivityMatrix) 
@@ -534,35 +535,35 @@ if ~isempty(handles(handles(end).currentVol).connectivityMatrix)
 end
 
 
-% --- Executes on button press in pushbutton11.
-function pushbutton11_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton11 (see GCBO)
+% --- Executes on button press in XZPushButton.
+function XZPushButton_Callback(hObject, eventdata, handles)
+% hObject    handle to XZPushButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 view([1 0 0]);
 
-% --- Executes on button press in pushbutton12.
-function pushbutton12_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton12 (see GCBO)
+% --- Executes on button press in XYPushButton.
+function XYPushButton_Callback(hObject, eventdata, handles)
+% hObject    handle to XYPushButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 view([0 0 1]);
 
-% --- Executes on button press in pushbutton13.
-function pushbutton13_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton13 (see GCBO)
+% --- Executes on button press in YZPushButton.
+function YZPushButton_Callback(hObject, eventdata, handles)
+% hObject    handle to YZPushButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 view([0 1 0]);
 
 
-% --- Executes on button press in checkbox5.
-function checkbox5_Callback(hObject, eventdata, handles)
-% hObject    handle to checkbox5 (see GCBO)
+% --- Executes on button press in camlightCheckBox.
+function camlightCheckBox_Callback(hObject, eventdata, handles)
+% hObject    handle to camlightCheckBox (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hint: get(hObject,'Value') returns toggle state of checkbox5
+% Hint: get(hObject,'Value') returns toggle state of camlightCheckBox
 clval = get(hObject, 'Value');
 H = guihandles(hObject);
 % clmo(handlem('light'))
@@ -574,21 +575,21 @@ else
 end
     
 
-function edit2_Callback(hObject, eventdata, handles)
-% hObject    handle to edit2 (see GCBO)
+function saveStringEdit_Callback(hObject, eventdata, handles)
+% hObject    handle to saveStringEdit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit2 as text
-%        str2double(get(hObject,'String')) returns contents of edit2 as a double
+% Hints: get(hObject,'String') returns contents of saveStringEdit as text
+%        str2double(get(hObject,'String')) returns contents of saveStringEdit as a double
 handles(end).figstr = get(hObject,'String');
 guidata(hObject,handles);
 
 
 
 % --- Executes during object creation, after setting all properties.
-function edit2_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit2 (see GCBO)
+function saveStringEdit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to saveStringEdit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -599,20 +600,20 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in checkbox6.
-function checkbox6_Callback(hObject, eventdata, handles)
-% hObject    handle to checkbox6 (see GCBO)
+% --- Executes on button press in singleColorCheckBox.
+function singleColorCheckBox_Callback(hObject, eventdata, handles)
+% hObject    handle to singleColorCheckBox (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hint: get(hObject,'Value') returns toggle state of checkbox6
+% Hint: get(hObject,'Value') returns toggle state of singleColorCheckBox
 if length(handles) > 1
     currentVol = handles(end).currentVol;
     mainHandles = guihandles(hObject);
     
     if get(hObject,'Value')
-        set(mainHandles.pushbutton14,'Enable','on');
-        singleColor = get(mainHandles.pushbutton14,'BackgroundColor');
+        set(mainHandles.colorPickPushButton,'Enable','on');
+        singleColor = get(mainHandles.colorPickPushButton,'BackgroundColor');
         
         if isempty(handles(currentVol).regionvalues)
             brain_at = handles(currentVol).brain_at;
@@ -629,13 +630,13 @@ if length(handles) > 1
         handles(currentVol).singleColorFlag = 1;
     else
         handles(currentVol).singleColorFlag = 0;
-        set(mainHandles.pushbutton14,'Enable','off');
+        set(mainHandles.colorPickPushButton,'Enable','off');
     end
     guidata(hObject,handles);
 end
-% --- Executes on button press in pushbutton14.
-function pushbutton14_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton14 (see GCBO)
+% --- Executes on button press in colorPickPushButton.
+function colorPickPushButton_Callback(hObject, eventdata, handles)
+% hObject    handle to colorPickPushButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 V = uisetcolor(get(hObject,'BackgroundColor'));
@@ -679,8 +680,8 @@ else
             for i=length(structIn)-1:-1:1
                 volNameList = [structIn(i).volString; volNameList];
             end
-            set(H.popupmenu1,'String',volNameList);
-            set(H.popupmenu1,'Value',currentVol);
+            set(H.addVolPopupMenu,'String',volNameList);
+            set(H.addVolPopupMenu,'Value',currentVol);
         else
             disp('Not a proper Brainography scene struct.');
         end
@@ -718,8 +719,8 @@ function uipushtool3_ClickedCallback(hObject, eventdata, handles)
 H = guihandles(hObject);
 initStruct = ui_initialize(H);
 guidata(hObject, initStruct);
-set(H.popupmenu1,'Value',1);
-set(H.popupmenu1,'String',{'+ Add New Volume'});
+set(H.addVolPopupMenu,'Value',1);
+set(H.addVolPopupMenu,'String',{'+ Add New Volume'});
 defaultGUI(H);
 
 

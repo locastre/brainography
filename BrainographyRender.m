@@ -24,6 +24,7 @@ hold on;
 renderingVols = length(renderProps);
 
 for i=1:renderingVols
+    disp(['Rendering ' renderProps(i).volString]);
     renderCortex(renderProps(i), axisHandle, settingsStruct);
    
     if renderProps(i).nodes || renderProps(i).pipes

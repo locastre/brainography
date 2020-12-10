@@ -42,7 +42,7 @@ for i=1:renderingVols
 end
 
 if settingsStruct.saveImages || settingsStruct.saveMovie
-    if isfield(settingsStruct,'savePath')
+    if isfield(settingsStruct,'savePath') && ~isempty(settingsStruct.savePath)
         savePath = [settingsStruct.savePath filesep];
     else
         savePath = '';
